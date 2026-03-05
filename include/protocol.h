@@ -16,8 +16,9 @@ typedef enum
     CMD_SEND_MSG,
     CMD_REPLY_MSG,
     CMD_ERROR,
-    CMD_CHECK_MEMBERSHIP, // NEW: Ask server if we can enter
-    CMD_SUCCESS           // NEW: Server grants access
+    CMD_CHECK_MEMBERSHIP,
+    CMD_SUCCESS,
+    CMD_SEARCH_GROUPS // NEW: Request a list of active groups
 } CommandType;
 
 // The standard Packet that gets sent over the network via send() and recv()

@@ -117,6 +117,41 @@ DWORD WINAPI handle_client(LPVOID arg)
             break;
         }
 
+        case CMD_SEARCH_GROUPS:
+        {
+            Packet list_pkt;
+            list_pkt.type = CMD_SUCCESS;
+            strcpy(list_pkt.sender, "SERVER");
+            strcpy(list_pkt.group_target, "System");
+
+            if (group_count == 0)
+            {
+                strcpy(list_pkt.payload, "There are currently no active groups.");
+            }
+            else
+            {
+                // Build a string list of all groups
+                strcpy(list_pkt.payload, "\n--- Active Groups ---\n");
+                for (int i = 0; i < group_count; i++)
+                {
+                    char temp[MAX_GROUP_NAME_LEN + 20];
+                    // Format: "- GroupName (X members)"
+                    snprintf(temp, sizeof(temp), "- %s (%d members)\n",
+                             active_groups[i].group_name, active_groups[i].member_count);
+
+                    // Prevent buffer overflow if there are tons of groups
+                    if (strlen(list_pkt.payload) + strlen(temp) < MAX_MESSAGE_LEN)
+                    {
+                        strcat(list_pkt.payload, temp);
+                    }
+                }
+            }
+
+            // Send the formatted list back to the user
+            send(client_socket, (char *)&list_pkt, sizeof(Packet), 0);
+            break;
+        }
+
         case CMD_LEAVE_GROUP:
         {
             Group *target_group = get_group_by_name(incoming_packet.group_target);

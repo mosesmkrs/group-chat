@@ -121,10 +121,11 @@ int main()
             printf("1. Create a new group\n");
             printf("2. Join an existing group\n");
             printf("3. Enter a group chat room\n");
-            printf("4. Leave a group\n");    // NEW OPTION
-            printf("5. Exit Application\n"); // MOVED TO 5
+            printf("4. Leave a group\n");
+            printf("5. Search active groups\n"); // NEW OPTION
+            printf("6. Exit Application\n");     // MOVED TO 6
             printf("=================================\n");
-            printf("Select option (1-5): ");
+            printf("Select option (1-6): ");
 
             fgets(choice_str, 10, stdin);
             int choice = atoi(choice_str);
@@ -160,7 +161,7 @@ int main()
                 Sleep(500);
             }
             else if (choice == 4)
-            { // NEW LOGIC FOR LEAVING
+            {
                 my_packet.type = CMD_LEAVE_GROUP;
                 printf("Enter name of group to leave: ");
                 fgets(my_packet.group_target, MAX_GROUP_NAME_LEN, stdin);
@@ -169,8 +170,19 @@ int main()
                 Sleep(500);
             }
             else if (choice == 5)
+            { // NEW LOGIC FOR SEARCHING
+                my_packet.type = CMD_SEARCH_GROUPS;
+                send(client_socket, (char *)&my_packet, sizeof(Packet), 0);
+                printf("Fetching group list...\n");
+                Sleep(500);
+            }
+            else if (choice == 6)
             {
                 break;
+            }
+            else
+            {
+                printf("Invalid choice.\n");
             }
         }
         else
